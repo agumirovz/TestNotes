@@ -21,9 +21,6 @@ class AssemblyBuilder: AssemblyBuilderProtocol {
     func buildMainModule(router: RouterProtocol) -> MainModule {
         let view        = MainModule()
         let presenter   = MainPresenter(view: view, router: router)
-        let router      = router
-        
-        view.router     = router
         view.presenter  = presenter
         return view
     }
@@ -36,10 +33,7 @@ class AssemblyBuilder: AssemblyBuilderProtocol {
                                            router: router,
                                            noteIndex: noteIndex,
                                            isNewNote: isNewNote)
-        let router      = router
         let isNewNote   = isNewNote
-        
-        view.router     = router
         view.presenter  = presenter
         view.isNewNote  = isNewNote
         view.noteIndex  = noteIndex

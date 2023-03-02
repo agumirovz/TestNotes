@@ -23,7 +23,6 @@ extension NoteDetailModule {
 class NoteDetailModule: UIViewController, DetailsModuleProtocol,
                         UITextViewDelegate, PHPickerViewControllerDelegate {
     
-    var router:       RouterProtocol!
     var presenter:    DetailsPresenterProtocol!
     var isNewNote:    Bool!
     var attString:    NSAttributedString!
@@ -32,7 +31,7 @@ class NoteDetailModule: UIViewController, DetailsModuleProtocol,
     var isUnderlined: Bool = false
     var isItalic:     Bool = false
     var isBold:       Bool = false
-   
+    
     let textView: UITextView = {
         let text = UITextView()
         return text
@@ -48,7 +47,7 @@ class NoteDetailModule: UIViewController, DetailsModuleProtocol,
     func setupViews() {
         
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(saveOrEditNote)),
+            UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction)),
             UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addImageToNote)),
             isNewNote ? UIBarButtonItem() : UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNote)),
             UIBarButtonItem(image: UIImage(systemName: "bold"), style: .plain, target: self, action: #selector(makeTextBold)),
@@ -64,26 +63,29 @@ class NoteDetailModule: UIViewController, DetailsModuleProtocol,
     
     @objc func makeTextBold() {
         isBold.toggle()
-        isBold ? textFontChange(font: Fonts.bold) : textFontChange(font: Fonts.regular)
+       textFontChange(font: Fonts.bold)
     }
     
     @objc func makeTextItalic() {
         isItalic.toggle()
-        isItalic ? textFontChange(font: Fonts.italic) : textFontChange(font: Fonts.regular)
+        textFontChange(font: Fonts.italic)
     }
     
     @objc func makeTextUnderlined() {
+       
         isUnderlined.toggle()
         textFontChange(font: Fonts.underlined)
     }
     
-    @objc func saveOrEditNote() {
-        presenter.saveOrEditNote(attributedString: self.textView.attributedText, noteIndex: noteIndex, isNewNote: isNewNote)
+    @objc func doneAction() {
+        isNewNote ? presenter.saveNote(attributedString: self.textView.attributedText) :
+        presenter.editNote(attributedString: self.textView.attributedText, noteIndex: noteIndex)
     }
     
     @objc func deleteNote() {
         presenter.deleteNote(noteIndex: noteIndex)
     }
+    
     // opens image picker
     @objc func addImageToNote() {
         var config      = PHPickerConfiguration()
@@ -125,25 +127,20 @@ class NoteDetailModule: UIViewController, DetailsModuleProtocol,
     func textFontChange(font: String) {
         let range = textView.selectedRange
         let string = NSMutableAttributedString(attributedString: textView.attributedText)
+        let defaultFont = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize))]
         switch font {
         case Fonts.bold:
             let bold = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize + 2))]
-            string.addAttributes(bold, range: range)
+            isBold ? string.addAttributes(bold, range: range) : string.addAttributes(defaultFont, range: range)
+            
         case Fonts.italic:
             let italic = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: CGFloat(fontSize))]
-            string.addAttributes(italic, range: range)
-        case Fonts.regular:
-            let defaultFont = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize))]
-            string.addAttributes(defaultFont, range: range)
-        default: break
-        }
-        
-        if isUnderlined {
+            isItalic ? string.addAttributes(italic, range: range) : string.addAttributes(defaultFont, range: range)
+        case Fonts.underlined:
             let underline = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.thick.rawValue]
-            string.addAttributes(underline, range: range)
-        } else {
-            let defaultFont = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.RawValue()]
-            string.addAttributes(defaultFont, range: range)
+            let notUnderline = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.RawValue()]
+            isUnderlined ? string.addAttributes(notUnderline, range: range) : string.addAttributes(underline, range: range)
+        default: break
         }
         
         textView.attributedText = string

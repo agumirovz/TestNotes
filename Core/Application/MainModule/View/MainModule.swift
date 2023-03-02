@@ -21,7 +21,6 @@ extension MainModule {
 }
 
 class MainModule: UIViewController, MainModuleProtocol {
-    var router:     RouterProtocol!
     var presenter:  MainPresenterProtocol!
     var cellWidth   = 150
     var noteData    = [NSAttributedString]()
@@ -52,7 +51,7 @@ class MainModule: UIViewController, MainModuleProtocol {
     }
     
     @objc func addNewNote() {
-        router.noteDetailsRoute(note: Data(), noteIndex: 0, isNewNote: true)
+        presenter.noteDetailsRoute(note: Data(), noteIndex: nil, isNewNote: true)
     }
 }
 
@@ -93,6 +92,8 @@ extension MainModule: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        router.noteDetailsRoute(note: Notes.shared.notes[indexPath.row], noteIndex: indexPath.row, isNewNote: false)
+        presenter.noteDetailsRoute(note: Notes.shared.notes[indexPath.row],
+                                          noteIndex: indexPath.row,
+                                          isNewNote: false)
     }
 }

@@ -15,6 +15,9 @@ protocol MainModuleProtocol {
 
 protocol MainPresenterProtocol {
     func viewDidLoad()
+    func noteDetailsRoute(note: Data,
+                          noteIndex: Int?,
+                          isNewNote: Bool)
 }
 
 class MainPresenter: MainPresenterProtocol {
@@ -32,6 +35,9 @@ class MainPresenter: MainPresenterProtocol {
             noteData.append(try! NSAttributedString(data: note, documentAttributes: nil))
         }
         view.success(noteData: noteData)
-        
+    }
+    
+    func noteDetailsRoute(note: Data, noteIndex: Int?, isNewNote: Bool) {
+        router.noteDetailsRoute(note: note, noteIndex: noteIndex, isNewNote: isNewNote)
     }
 }
