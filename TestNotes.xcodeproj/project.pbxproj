@@ -10,6 +10,7 @@
 		054CEA383E7A27010CA1B4D1 /* Pods_TestTask.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0D94FB6D3AD39917C192C7B /* Pods_TestTask.framework */; };
 		4C8C1CF8DDF528A87F42078F /* Pods_TestTask_TestTaskUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF9D6042538F99BA8DFEF28D /* Pods_TestTask_TestTaskUITests.framework */; };
 		77EED33F240F2F2FE56A856A /* Pods_TestTaskTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFEEA73D8B7A2A9FB5A1AE94 /* Pods_TestTaskTests.framework */; };
+		C6BC50A829B8CA500037F82F /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BC50A729B8CA500037F82F /* DIContainer.swift */; };
 		C6F74CCD295C2FF600641D47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F74CCC295C2FF600641D47 /* AppDelegate.swift */; };
 		C6F74CCF295C2FF600641D47 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F74CCE295C2FF600641D47 /* SceneDelegate.swift */; };
 		C6F74CD6295C2FF700641D47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C6F74CD5295C2FF700641D47 /* Assets.xcassets */; };
@@ -53,6 +54,7 @@
 		8ABC77E07E62E1C3A4380C80 /* Pods-TestTask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestTask.debug.xcconfig"; path = "Target Support Files/Pods-TestTask/Pods-TestTask.debug.xcconfig"; sourceTree = "<group>"; };
 		A0D94FB6D3AD39917C192C7B /* Pods_TestTask.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestTask.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFEEA73D8B7A2A9FB5A1AE94 /* Pods_TestTaskTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestTaskTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6BC50A729B8CA500037F82F /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
 		C6F74CC9295C2FF600641D47 /* TestNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6F74CCC295C2FF600641D47 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C6F74CCE295C2FF600641D47 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -105,6 +107,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C6BC50A929B8CA640037F82F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				C6BC50A729B8CA500037F82F /* DIContainer.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		C6F74CC0295C2FF600641D47 = {
 			isa = PBXGroup;
 			children = (
@@ -148,6 +158,7 @@
 		C6F74CFC295C300C00641D47 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				C6BC50A929B8CA640037F82F /* Services */,
 				C6F74D0E295C7B2900641D47 /* AssemblyBuilder */,
 				C6F74D0B295C7AFA00641D47 /* Router */,
 				C6F74D04295C6F8F00641D47 /* Root */,
@@ -534,6 +545,7 @@
 				C6F74D1F295DBFDE00641D47 /* NoteModel.swift in Sources */,
 				C6F74D03295C35EC00641D47 /* TableViewCell.swift in Sources */,
 				C6F74D06295C6FA600641D47 /* NavigationController.swift in Sources */,
+				C6BC50A829B8CA500037F82F /* DIContainer.swift in Sources */,
 				C6F74D12295C7D3500641D47 /* MainPresenter.swift in Sources */,
 				C6F74D01295C341500641D47 /* MainModule.swift in Sources */,
 				C6F74D0D295C7B0600641D47 /* Router.swift in Sources */,
@@ -645,6 +657,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -698,6 +711,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
