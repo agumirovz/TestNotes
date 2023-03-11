@@ -20,17 +20,16 @@ extension NoteDetailModule {
     }
 }
 
-class NoteDetailModule: UIViewController, DetailsModuleProtocol,
-                        UITextViewDelegate, PHPickerViewControllerDelegate {
+class NoteDetailModule: UIViewController,
+                        DetailsModuleProtocol,
+                        UITextViewDelegate {
     
     var presenter:    DetailsPresenterProtocol!
     var isNewNote:    Bool!
     var attString:    NSAttributedString!
     var noteIndex:    Int!
     var fontSize      = 14
-    var isUnderlined: Bool = false
-    var isItalic:     Bool = false
-    var isBold:       Bool = false
+    var textStyleService: TextStyleService!
     
     let textView: UITextView = {
         let text = UITextView()
@@ -42,18 +41,24 @@ class NoteDetailModule: UIViewController, DetailsModuleProtocol,
         view.backgroundColor = UIColor.systemBackground
         presenter.viewDidLoad()
         setupViews()
+        textStyleService = TextStyleService()
     }
     
     func setupViews() {
         
-        navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction)),
-            UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addImageToNote)),
-            isNewNote ? UIBarButtonItem() : UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNote)),
-            UIBarButtonItem(image: UIImage(systemName: "bold"), style: .plain, target: self, action: #selector(makeTextBold)),
-            UIBarButtonItem(image: UIImage(systemName: "italic"), style: .plain, target: self, action: #selector(makeTextItalic)),
-            UIBarButtonItem(image: UIImage(systemName: "underline"), style: .plain, target: self, action: #selector(makeTextUnderlined))
-        ]
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction))
+        let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addImageToNote))
+        let delete = isNewNote ? UIBarButtonItem() : UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNote))
+        let bold = UIBarButtonItem(image: UIImage(systemName: "bold"), style: .plain, target: self, action: #selector(changeFont))
+        bold.title = Fonts.bold
+        let italic = UIBarButtonItem(image: UIImage(systemName: "italic"), style: .plain, target: self, action: #selector(changeFont))
+        italic.title = Fonts.italic
+        let underlined = UIBarButtonItem(image: UIImage(systemName: "underline"), style: .plain, target: self, action: #selector(changeFont))
+        underlined.title = Fonts.underlined
+        
+        
+        
+        navigationItem.rightBarButtonItems = [done, add, delete, bold, italic, underlined]
         
         view.addSubview(textView)
         textView.snp.makeConstraints { make in
@@ -61,20 +66,21 @@ class NoteDetailModule: UIViewController, DetailsModuleProtocol,
         }
     }
     
-    @objc func makeTextBold() {
-        isBold.toggle()
-       textFontChange(font: Fonts.bold)
-    }
-    
-    @objc func makeTextItalic() {
-        isItalic.toggle()
-        textFontChange(font: Fonts.italic)
-    }
-    
-    @objc func makeTextUnderlined() {
-       
-        isUnderlined.toggle()
-        textFontChange(font: Fonts.underlined)
+    @objc func changeFont(sender: UIBarButtonItem) {
+        let range = textView.selectedRange
+        let string = NSMutableAttributedString(attributedString: textView.attributedText)
+        let fontName = textView.font?.fontName
+        
+        textStyleService.textFontChange(to: sender.title!,
+                                        range: range,
+                                        string: string,
+                                        fontName: fontName ?? "",
+                                        fontSize: fontSize) { string, range in
+            
+            self.textView.attributedText = string
+            self.textView.selectedRange = range
+            
+        }
     }
     
     @objc func doneAction() {
@@ -95,18 +101,30 @@ class NoteDetailModule: UIViewController, DetailsModuleProtocol,
         config.selectionLimit = 1
         self.present(picker, animated: true)
     }
+}
+
+
+extension NoteDetailModule: PHPickerViewControllerDelegate {
+    
     //puts image in note
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         for result in results {
-            result.itemProvider.loadObject(ofClass: UIImage.self, completionHandler: { (object, error) in
+            result.itemProvider.loadObject(ofClass: UIImage.self,
+                                           completionHandler: { (object, error) in
+                
                 if let image = object as? UIImage {
-                    DispatchQueue.main.async { [self] in
-                        let textAttachment      = NSTextAttachment()
-                        textAttachment.image    = resizeImage(width: textView.frame.size.width, image: image)
-                        let attString           = NSMutableAttributedString(attachment: textAttachment)
-                        textView.textStorage.append(attString)
-                        picker.dismiss(animated: true, completion: nil)
-                        textView.selectedRange.location += 1
+                    DispatchQueue.global().async { [self] in
+                        let textAttachment = NSTextAttachment()
+                        let attString = NSMutableAttributedString(attachment: textAttachment)
+                        
+                        DispatchQueue.main.async {
+                            
+                            textAttachment.image = self.resizeImage(width: self.textView.frame.size.width, image: image)
+                            self.textView.textStorage.append(attString)
+                            picker.dismiss(animated: true, completion: nil)
+                            self.textView.selectedRange.location += 1
+                            
+                        }
                     }
                 }
             })
@@ -123,34 +141,5 @@ class NoteDetailModule: UIViewController, DetailsModuleProtocol,
         UIGraphicsEndImageContext()
         return newImage
     }
-    // Main function to change textView text's font
-    func textFontChange(font: String) {
-        let range = textView.selectedRange
-        let string = NSMutableAttributedString(attributedString: textView.attributedText)
-        let defaultFont = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize))]
-        switch font {
-        case Fonts.bold:
-            let bold = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize + 2))]
-            isBold ? string.addAttributes(bold, range: range) : string.addAttributes(defaultFont, range: range)
-            
-        case Fonts.italic:
-            let italic = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: CGFloat(fontSize))]
-            isItalic ? string.addAttributes(italic, range: range) : string.addAttributes(defaultFont, range: range)
-        case Fonts.underlined:
-            let underline = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.thick.rawValue]
-            let notUnderline = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.RawValue()]
-            isUnderlined ? string.addAttributes(notUnderline, range: range) : string.addAttributes(underline, range: range)
-        default: break
-        }
-        
-        textView.attributedText = string
-        textView.selectedRange = range
-    }
-}
-
-enum Fonts {
-    static var bold       = "bold"
-    static var italic     = "italic"
-    static var underlined = "underlined"
-    static var regular    = "regular"
+    
 }

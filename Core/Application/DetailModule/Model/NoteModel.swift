@@ -14,6 +14,7 @@ class Notes {
     
     var notes: [Data] {
         get {
+            
             if let data = defaults.value(forKey: "notes") as? Data {
                 return try! PropertyListDecoder().decode([Data].self, from: data)
             } else {
