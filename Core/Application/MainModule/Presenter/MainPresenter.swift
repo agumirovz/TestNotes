@@ -9,14 +9,13 @@ import Foundation
 import UIKit
 
 protocol MainModuleProtocol {
-    func success(noteData: [NSAttributedString])
+    func success(screenshots: [UIImage])
     func failure()
 }
 
 protocol MainPresenterProtocol {
     func viewDidLoad()
-    func noteDetailsRoute(note: Data,
-                          noteIndex: Int?,
+    func noteDetailsRoute(noteIndex: Int?,
                           isNewNote: Bool)
 }
 
@@ -30,14 +29,15 @@ class MainPresenter: MainPresenterProtocol {
     }
     
     func viewDidLoad() {
-        var noteData = [NSAttributedString]()
+        var screenshots = [UIImage]()
         for note in Notes.shared.notes {
-            noteData.append(try! NSAttributedString(data: note, documentAttributes: nil))
+            guard let image = UIImage(data: note.screenshot) else { return }
+            screenshots.append(image)
         }
-        view.success(noteData: noteData)
+        view.success(screenshots: screenshots)
     }
     
-    func noteDetailsRoute(note: Data, noteIndex: Int?, isNewNote: Bool) {
-        router.noteDetailsRoute(note: note, noteIndex: noteIndex, isNewNote: isNewNote)
+    func noteDetailsRoute(noteIndex: Int?, isNewNote: Bool) {
+        router.noteDetailsRoute(noteIndex: noteIndex, isNewNote: isNewNote)
     }
 }

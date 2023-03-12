@@ -196,7 +196,6 @@
 			children = (
 				C6F74D0A295C7AEB00641D47 /* Presenter */,
 				C6F74D09295C7AE800641D47 /* View */,
-				C6F74D08295C7ADC00641D47 /* Model */,
 			);
 			path = MainModule;
 			sourceTree = "<group>";
@@ -207,13 +206,6 @@
 				C6F74D05295C6FA600641D47 /* NavigationController.swift */,
 			);
 			path = Root;
-			sourceTree = "<group>";
-		};
-		C6F74D08295C7ADC00641D47 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		C6F74D09295C7AE800641D47 /* View */ = {

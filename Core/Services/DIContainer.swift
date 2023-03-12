@@ -16,20 +16,28 @@ class DIContainer {
     static var standart = DIContainer()
     private var dependencies = [String:Weak]()
     
-    private func register<T>(_ dependency: T) {
-        let key = "\(type(of: T.self))"
+    public func register<Service>(_ dependency: Service) {
+        registerDependency(dependency)
+    }
+    
+    public func resolve<Service>() throws -> Service {
+        try resolveDependency()
+    }
+    
+    private func registerDependency<Service>(_ dependency: Service) {
+        let key = "\(type(of: Service.self))"
         let weak = Weak(weakValue: dependency as AnyObject)
         dependencies[key] = weak
     }
     
-    private func resolve<T>() throws -> T {
-        let key = "\(type(of: T.self))"
+    private func resolveDependency<Service>() throws -> Service {
+        let key = "\(type(of: Service.self))"
         let weak = dependencies[key]
         
         if weak != nil {
-            return weak?.weakValue as! T
+            return weak?.weakValue as! Service
         } else {
-            return ContainterErrors.valueNotRegistered as! T
+            return ContainterErrors.valueNotRegistered as! Service
         }
     }
 }

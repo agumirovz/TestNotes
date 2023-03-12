@@ -12,16 +12,11 @@ import SnapKit
 class CollectionViewCell: UICollectionViewCell{
     static let cellId = "CollectionViewCell"
     
-    let notePreview: UITextView           = {
-        let textView                      = UITextView()
-        textView.clipsToBounds            = true
-        textView.backgroundColor          = .lightGray
-        textView.isSelectable             = false
-        textView.isEditable               = false
-        textView.isScrollEnabled          = false
-        textView.isUserInteractionEnabled = false
-        textView.delaysContentTouches     = false
-        return textView
+    let notePreview: UIImageView = {
+        let image = UIImageView()
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        return image
     }()
     
     override init(frame: CGRect) {
@@ -40,7 +35,8 @@ class CollectionViewCell: UICollectionViewCell{
         contentView.addSubview(notePreview)
         
         notePreview.snp.makeConstraints { make in
-            make.left.right.top.bottom.equalToSuperview()
+            make.left.top.right.equalToSuperview()
+            make.height.equalTo(400)
         }
     }
 }

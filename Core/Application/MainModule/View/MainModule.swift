@@ -10,8 +10,8 @@ import UIKit
 import SnapKit
 
 extension MainModule {
-    func success(noteData: [NSAttributedString]) {
-        self.noteData = noteData
+    func success(screenshots: [UIImage]) {
+        self.screenshots = screenshots
         self.mainCollectionView.reloadData()
     }
     
@@ -23,7 +23,7 @@ extension MainModule {
 class MainModule: UIViewController, MainModuleProtocol {
     var presenter:  MainPresenterProtocol!
     var cellWidth   = 150
-    var noteData    = [NSAttributedString]()
+    var screenshots    = [UIImage]()
     
     var mainCollectionView: UICollectionView = {
         let layout                 = UICollectionViewFlowLayout()
@@ -51,7 +51,7 @@ class MainModule: UIViewController, MainModuleProtocol {
     }
     
     @objc func addNewNote() {
-        presenter.noteDetailsRoute(note: Data(), noteIndex: nil, isNewNote: true)
+        presenter.noteDetailsRoute(noteIndex: nil, isNewNote: true)
     }
 }
 
@@ -73,13 +73,13 @@ extension MainModule: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        noteData.count
+        screenshots.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.cellId, for: indexPath) as? CollectionViewCell
         else { return UICollectionViewCell() }
-        cell.notePreview.attributedText = noteData[indexPath.row]
+        cell.notePreview.image = screenshots[indexPath.row]
         return cell
     }
     
@@ -92,8 +92,7 @@ extension MainModule: UICollectionViewDelegate, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presenter.noteDetailsRoute(note: Notes.shared.notes[indexPath.row],
-                                          noteIndex: indexPath.row,
+        presenter.noteDetailsRoute(noteIndex: indexPath.row,
                                           isNewNote: false)
     }
 }

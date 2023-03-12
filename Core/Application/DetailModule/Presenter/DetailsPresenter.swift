@@ -14,11 +14,13 @@ protocol DetailsModuleProtocol {
 }
 
 protocol DetailsPresenterProtocol {
-    init(view: DetailsModuleProtocol,
-         router: RouterProtocol, noteIndex: Int, isNewNote: Bool)
+    
     func viewDidLoad()
-    func saveNote(attributedString: NSAttributedString)
-    func editNote(attributedString: NSAttributedString, noteIndex: Int)
+    func saveNote(attributedString: NSAttributedString,
+                  screenshot: Data)
+    func editNote(attributedString: NSAttributedString,
+                  noteIndex: Int,
+                  screenshot: Data)
     func deleteNote(noteIndex: Int)
 }
 
@@ -39,25 +41,31 @@ class DetailsPresenter: DetailsPresenterProtocol {
         if isNewNote {
             view.success(attString: NSAttributedString())
         } else {
-            let attString = try! NSAttributedString(data: Notes.shared.notes[noteIndex], documentAttributes: nil)
+            let attString = try! NSAttributedString(data: Notes.shared.notes[noteIndex].attString, documentAttributes: nil)
             view.success(attString: attString)
         }
     }
         
     
-    func saveNote(attributedString: NSAttributedString) {
+    func saveNote(attributedString: NSAttributedString, screenshot: Data) {
         let data = try! attributedString.data(from: NSRange(location: 0,
                                                             length: attributedString.length),
                                               documentAttributes: [.documentType: NSAttributedString.DocumentType.rtfd])
-        Notes.shared.notes.insert(data, at: 0)
+        Notes.shared.notes.insert(NoteModel(attString: data,
+                                            screenshot: screenshot), at: 0)
         router.goBack()
     }
     
-    func editNote(attributedString: NSAttributedString, noteIndex: Int) {
+    func editNote(attributedString: NSAttributedString,
+                  noteIndex: Int,
+                  screenshot: Data) {
+        
         let data = try! attributedString.data(from: NSRange(location: 0,
                                                             length: attributedString.length),
                                               documentAttributes: [.documentType: NSAttributedString.DocumentType.rtfd])
-        Notes.shared.notes[noteIndex] = data
+        
+        Notes.shared.notes[noteIndex] = NoteModel(attString: data,
+                                                  screenshot: screenshot)
         router.goBack()
     }
     

@@ -10,9 +10,7 @@ import UIKit
 import SwiftUI
 
 protocol RouterProtocol {
-    init(assemblyBuilder:     AssemblyBuilderProtocol,
-         navigationController: UINavigationController)
-    func noteDetailsRoute(note: Data, noteIndex: Int?, isNewNote: Bool)
+    func noteDetailsRoute(noteIndex: Int?, isNewNote: Bool)
     func mainModuleRoute()
     func goBack()
 }
@@ -26,7 +24,7 @@ class Router: RouterProtocol {
         navigationController.viewControllers = [view]
     }
     
-    func noteDetailsRoute(note: Data, noteIndex: Int?, isNewNote: Bool) {
+    func noteDetailsRoute(noteIndex: Int?, isNewNote: Bool) {
         let view = assemblyBuilder.buildDetailsModule(router: self, noteIndex: noteIndex ?? 0, isNewNote: isNewNote)
         navigationController.pushViewController(view, animated: true)
     }

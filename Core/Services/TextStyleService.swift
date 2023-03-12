@@ -23,6 +23,7 @@ class TextStyleService {
         let regular = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize))]
         let underlined = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.thick.rawValue]
         var isUnderlined = false
+        
         string.enumerateAttributes(in: range) { dict, range, value in
             if dict.keys.contains(.underlineStyle) {
                 isUnderlined = true

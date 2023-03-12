@@ -31,6 +31,11 @@ class NoteDetailModule: UIViewController,
     var fontSize      = 14
     var textStyleService: TextStyleService!
     
+    let imageVIew: UIImageView = {
+        let image = UIImageView()
+        return image
+    }()
+    
     let textView: UITextView = {
         let text = UITextView()
         return text
@@ -41,32 +46,10 @@ class NoteDetailModule: UIViewController,
         view.backgroundColor = UIColor.systemBackground
         presenter.viewDidLoad()
         setupViews()
-        textStyleService = TextStyleService()
-    }
-    
-    func setupViews() {
-        
-        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction))
-        let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addImageToNote))
-        let delete = isNewNote ? UIBarButtonItem() : UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNote))
-        let bold = UIBarButtonItem(image: UIImage(systemName: "bold"), style: .plain, target: self, action: #selector(changeFont))
-        bold.title = Fonts.bold
-        let italic = UIBarButtonItem(image: UIImage(systemName: "italic"), style: .plain, target: self, action: #selector(changeFont))
-        italic.title = Fonts.italic
-        let underlined = UIBarButtonItem(image: UIImage(systemName: "underline"), style: .plain, target: self, action: #selector(changeFont))
-        underlined.title = Fonts.underlined
-        
-        
-        
-        navigationItem.rightBarButtonItems = [done, add, delete, bold, italic, underlined]
-        
-        view.addSubview(textView)
-        textView.snp.makeConstraints { make in
-            make.left.right.top.bottom.equalToSuperview()
-        }
     }
     
     @objc func changeFont(sender: UIBarButtonItem) {
+        
         let range = textView.selectedRange
         let string = NSMutableAttributedString(attributedString: textView.attributedText)
         let fontName = textView.font?.fontName
@@ -80,17 +63,64 @@ class NoteDetailModule: UIViewController,
             self.textView.attributedText = string
             self.textView.selectedRange = range
             
+            
         }
     }
     
     @objc func doneAction() {
-        isNewNote ? presenter.saveNote(attributedString: self.textView.attributedText) :
-        presenter.editNote(attributedString: self.textView.attributedText, noteIndex: noteIndex)
+        isNewNote ? presenter.saveNote(attributedString: self.textView.attributedText, screenshot: screenShot()) :
+        presenter.editNote(attributedString: self.textView.attributedText, noteIndex: noteIndex, screenshot: screenShot())
     }
     
     @objc func deleteNote() {
         presenter.deleteNote(noteIndex: noteIndex)
     }
+    
+    func screenShot() -> Data {
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: view.bounds.width,
+                                                      height: view.bounds.height),
+                                               false, 1)
+        
+        self.textView.isEditable = false
+        self.textView.backgroundColor = UIColor(red: 180/255, green: 194/255, blue: 211/255, alpha: 0.3)
+        self.textView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let screenshot = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        guard let data = screenshot.jpegData(compressionQuality: 0.5) else { return Data() }
+        self.textView.backgroundColor = .systemBackground
+        return data
+        
+    }
+
+}
+
+extension NoteDetailModule {
+    
+    func setupViews() {
+        
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction))
+        let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addImageToNote))
+        let delete = isNewNote ? UIBarButtonItem() : UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNote))
+        let bold = UIBarButtonItem(image: UIImage(systemName: "bold"), style: .plain, target: self, action: #selector(changeFont))
+        bold.title = Fonts.bold
+        let italic = UIBarButtonItem(image: UIImage(systemName: "italic"), style: .plain, target: self, action: #selector(changeFont))
+        italic.title = Fonts.italic
+        let underlined = UIBarButtonItem(image: UIImage(systemName: "underline"), style: .plain, target: self, action: #selector(changeFont))
+        underlined.title = Fonts.underlined
+                
+        navigationItem.rightBarButtonItems = [done, add, delete, bold, italic, underlined]
+        
+        view.addSubview(textView)
+        textView.snp.makeConstraints { make in
+            make.left.right.top.bottom.equalToSuperview()
+        }
+    }
+    
+}
+
+
+extension NoteDetailModule: PHPickerViewControllerDelegate {
+    
     
     // opens image picker
     @objc func addImageToNote() {
@@ -101,10 +131,6 @@ class NoteDetailModule: UIViewController,
         config.selectionLimit = 1
         self.present(picker, animated: true)
     }
-}
-
-
-extension NoteDetailModule: PHPickerViewControllerDelegate {
     
     //puts image in note
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
