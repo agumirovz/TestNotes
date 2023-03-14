@@ -28,7 +28,6 @@ class NoteDetailModule: UIViewController,
     var isNewNote:    Bool!
     var attString:    NSAttributedString!
     var noteIndex:    Int!
-    var textStyleService: TextStyleService!
     
     let imageVIew: UIImageView = {
         let image = UIImageView()
@@ -48,34 +47,19 @@ class NoteDetailModule: UIViewController,
     }
     
     @objc func changeFont(sender: UIBarButtonItem) {
-        
-        textStyleService.textFontChange(to: Fonts(rawValue: sender.tag) ?? .bold,
-                                        textView: textView)
+        textView.textFontChange(to: Fonts(rawValue: sender.tag) ?? .bold)
     }
     
     @objc func doneAction() {
-        isNewNote ? presenter.saveNote(attributedString: self.textView.attributedText, screenshot: screenShot()) :
-        presenter.editNote(attributedString: self.textView.attributedText, noteIndex: noteIndex, screenshot: screenShot())
+        isNewNote ? presenter.saveNote(attributedString: self.textView.attributedText, screenshot: textView.screenShot()) :
+        presenter.editNote(attributedString: self.textView.attributedText, noteIndex: noteIndex, screenshot: textView.screenShot())
     }
     
     @objc func deleteNote() {
         presenter.deleteNote(noteIndex: noteIndex)
     }
     
-    func screenShot() -> Data {
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: view.bounds.width,
-                                                      height: view.bounds.height),
-                                               false, 1)
-        
-        self.textView.isEditable = false
-        self.textView.backgroundColor = UIColor(red: 180/255, green: 194/255, blue: 211/255, alpha: 0.3)
-        self.textView.layer.render(in: UIGraphicsGetCurrentContext()!)
-        let screenshot = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        guard let data = screenshot.jpegData(compressionQuality: 0.5) else { return Data() }
-        self.textView.backgroundColor = .systemBackground
-        return data
-    }
+  
 
 }
 

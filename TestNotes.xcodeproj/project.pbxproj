@@ -10,7 +10,7 @@
 		054CEA383E7A27010CA1B4D1 /* Pods_TestTask.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0D94FB6D3AD39917C192C7B /* Pods_TestTask.framework */; };
 		4C8C1CF8DDF528A87F42078F /* Pods_TestTask_TestTaskUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF9D6042538F99BA8DFEF28D /* Pods_TestTask_TestTaskUITests.framework */; };
 		77EED33F240F2F2FE56A856A /* Pods_TestTaskTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFEEA73D8B7A2A9FB5A1AE94 /* Pods_TestTaskTests.framework */; };
-		C67E8A7429BC1DF6003865F6 /* TextStyleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67E8A7329BC1DF6003865F6 /* TextStyleService.swift */; };
+		C67E8A7429BC1DF6003865F6 /* TextView Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67E8A7329BC1DF6003865F6 /* TextView Extension.swift */; };
 		C6BC50A829B8CA500037F82F /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BC50A729B8CA500037F82F /* DIContainer.swift */; };
 		C6F74CCD295C2FF600641D47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F74CCC295C2FF600641D47 /* AppDelegate.swift */; };
 		C6F74CCF295C2FF600641D47 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F74CCE295C2FF600641D47 /* SceneDelegate.swift */; };
@@ -55,7 +55,7 @@
 		8ABC77E07E62E1C3A4380C80 /* Pods-TestTask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestTask.debug.xcconfig"; path = "Target Support Files/Pods-TestTask/Pods-TestTask.debug.xcconfig"; sourceTree = "<group>"; };
 		A0D94FB6D3AD39917C192C7B /* Pods_TestTask.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestTask.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFEEA73D8B7A2A9FB5A1AE94 /* Pods_TestTaskTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestTaskTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C67E8A7329BC1DF6003865F6 /* TextStyleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStyleService.swift; sourceTree = "<group>"; };
+		C67E8A7329BC1DF6003865F6 /* TextView Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextView Extension.swift"; sourceTree = "<group>"; };
 		C6BC50A729B8CA500037F82F /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
 		C6F74CC9295C2FF600641D47 /* TestNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6F74CCC295C2FF600641D47 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -113,7 +113,6 @@
 			isa = PBXGroup;
 			children = (
 				C6BC50A729B8CA500037F82F /* DIContainer.swift */,
-				C67E8A7329BC1DF6003865F6 /* TextStyleService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -175,6 +174,7 @@
 		C6F74CFD295C303B00641D47 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C67E8A7329BC1DF6003865F6 /* TextView Extension.swift */,
 				C6F74CD5295C2FF700641D47 /* Assets.xcassets */,
 				C6F74CD7295C2FF700641D47 /* LaunchScreen.storyboard */,
 				C6F74CDA295C2FF700641D47 /* Info.plist */,
@@ -548,7 +548,7 @@
 				C6F74D18295C8E2B00641D47 /* DetailsPresenter.swift in Sources */,
 				C6F74D16295C802A00641D47 /* NoteDetailModule.swift in Sources */,
 				C6F74CCF295C2FF600641D47 /* SceneDelegate.swift in Sources */,
-				C67E8A7429BC1DF6003865F6 /* TextStyleService.swift in Sources */,
+				C67E8A7429BC1DF6003865F6 /* TextView Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

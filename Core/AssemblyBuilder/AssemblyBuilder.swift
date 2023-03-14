@@ -34,9 +34,9 @@ class AssemblyBuilder: AssemblyBuilderProtocol {
                                            noteIndex: noteIndex,
                                            isNewNote: isNewNote)
         
-        let textStyleService: TextStyleService = try! DIContainer.standart.resolve()
+//        let textStyleService: TextStyleService = try! DIContainer.standart.resolve()
         let isNewNote   = isNewNote
-        view.textStyleService = textStyleService
+//        view.textStyleService = textStyleService
         view.presenter  = presenter
         view.isNewNote  = isNewNote
         view.noteIndex  = noteIndex

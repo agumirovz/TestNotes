@@ -9,15 +9,15 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var textStyleService: TextStyleService!
+//    var textStyleService: TextStyleService!
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        textStyleService = TextStyleService()
+//        textStyleService = TextStyleService()
         
         
-        DIContainer.standart.register(textStyleService!)
+//        DIContainer.standart.register(textStyleService!)
         
         
         return true
