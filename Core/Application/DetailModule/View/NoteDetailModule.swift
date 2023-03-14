@@ -28,7 +28,6 @@ class NoteDetailModule: UIViewController,
     var isNewNote:    Bool!
     var attString:    NSAttributedString!
     var noteIndex:    Int!
-    var fontSize      = 14
     var textStyleService: TextStyleService!
     
     let imageVIew: UIImageView = {
@@ -50,21 +49,8 @@ class NoteDetailModule: UIViewController,
     
     @objc func changeFont(sender: UIBarButtonItem) {
         
-        let range = textView.selectedRange
-        let string = NSMutableAttributedString(attributedString: textView.attributedText)
-        let fontName = textView.font?.fontName
-        
-        textStyleService.textFontChange(to: sender.title!,
-                                        range: range,
-                                        string: string,
-                                        fontName: fontName ?? "",
-                                        fontSize: fontSize) { string, range in
-            
-            self.textView.attributedText = string
-            self.textView.selectedRange = range
-            
-            
-        }
+        textStyleService.textFontChange(to: Fonts(rawValue: sender.tag) ?? .bold,
+                                        textView: textView)
     }
     
     @objc func doneAction() {
@@ -89,7 +75,6 @@ class NoteDetailModule: UIViewController,
         guard let data = screenshot.jpegData(compressionQuality: 0.5) else { return Data() }
         self.textView.backgroundColor = .systemBackground
         return data
-        
     }
 
 }
@@ -102,11 +87,11 @@ extension NoteDetailModule {
         let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addImageToNote))
         let delete = isNewNote ? UIBarButtonItem() : UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNote))
         let bold = UIBarButtonItem(image: UIImage(systemName: "bold"), style: .plain, target: self, action: #selector(changeFont))
-        bold.title = Fonts.bold
+        bold.tag = Fonts.bold.rawValue
         let italic = UIBarButtonItem(image: UIImage(systemName: "italic"), style: .plain, target: self, action: #selector(changeFont))
-        italic.title = Fonts.italic
+        italic.tag = Fonts.italic.rawValue
         let underlined = UIBarButtonItem(image: UIImage(systemName: "underline"), style: .plain, target: self, action: #selector(changeFont))
-        underlined.title = Fonts.underlined
+        underlined.tag = Fonts.underlined.rawValue
                 
         navigationItem.rightBarButtonItems = [done, add, delete, bold, italic, underlined]
         

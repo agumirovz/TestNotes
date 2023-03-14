@@ -10,47 +10,62 @@ import UIKit
 
 class TextStyleService {
     
-    func textFontChange(to: String,
-                        range: NSRange,
-                        string: NSMutableAttributedString,
-                        fontName: String,
-                        fontSize: Int,
-                        completion: @escaping (_ string: NSMutableAttributedString,
-                                               _ range: NSRange) -> Void) {
+    func textFontChange(to: Fonts,
+                        textView: UITextView) {
+        let range = textView.selectedRange
+        let underlined = textView.textStorage.attribute(.underlineStyle, at: range.location, effectiveRange: nil) as? Int
         
-        let bold = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: CGFloat(fontSize))]
-        let italic = [NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: CGFloat(fontSize))]
-        let regular = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize))]
-        let underlined = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.thick.rawValue]
-        var isUnderlined = false
-        
-        string.enumerateAttributes(in: range) { dict, range, value in
-            if dict.keys.contains(.underlineStyle) {
-                isUnderlined = true
+        if let initialFont = textView.textStorage.attribute(.font, at: range.location, effectiveRange: nil) as? UIFont {
+            
+            var currentTraits = initialFont.fontDescriptor.symbolicTraits
+            let fontSize = initialFont.pointSize
+            
+            switch to {
+            case .bold:
+                currentTraits.contains(.traitBold) ?
+                currentTraits.remove(.traitBold) :
+                currentTraits.update(with: .traitBold)
+            case .italic:
+                currentTraits.contains(.traitItalic) ? currentTraits.remove(.traitItalic) :
+                currentTraits.update(with: .traitItalic)
+            case .underlined:
+                underlined == NSUnderlineStyle.single.rawValue ?
+                textView.textStorage.enumerateAttribute(.underlineStyle, in: range,
+                                                        options: .longestEffectiveRangeNotRequired,
+                                                        using: { (_, range, stop) in
+                    textView.textStorage.beginEditing()
+                    textView.textStorage.removeAttribute(NSAttributedString.Key.underlineStyle, range: range)
+                    textView.textStorage.endEditing()
+                }) :
+                textView.textStorage.enumerateAttribute(.underlineStyle, in: range,
+                                                        options: .longestEffectiveRangeNotRequired,
+                                                        using: { (_, range, stop) in
+                    textView.textStorage.beginEditing()
+                    textView.textStorage.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
+                    textView.textStorage.endEditing()
+                })
+            default:
+                break
+            }
+            
+            guard let descriptor = initialFont.fontDescriptor.withSymbolicTraits(currentTraits) else { return }
+            
+            let updateFont = UIFont(descriptor: descriptor,
+                                    size: fontSize)
+            
+            textView.textStorage.enumerateAttribute(.font, in: range) { (_, range, stop) in
+                textView.textStorage.beginEditing()
+                textView.textStorage.addAttribute(.font, value: updateFont, range: range)
+                textView.textStorage.endEditing()
             }
         }
-        
-        switch to {
-        case Fonts.bold:
-            fontName == Fonts.bold ? string.addAttributes(regular, range: range) :
-            string.addAttributes(bold, range: range)
-        case Fonts.italic:
-            fontName == Fonts.italic ? string.addAttributes(regular, range: range) :
-            string.addAttributes(italic, range: range)
-        case Fonts.underlined:
-            isUnderlined ? string.removeAttribute(NSAttributedString.Key.underlineStyle, range: range) : string.addAttributes(underlined, range: range)
-        default:
-            break
-        }
-        
-        completion(string, range)
     }
     
 }
 
-enum Fonts {
-    static var bold       = ".SFUI-Semibold"
-    static var italic     = ".SFUI-RegularItalic"
-    static var underlined = "underlined"
-    static var regular    = "regular"
+enum Fonts: Int {
+    case bold
+    case italic
+    case underlined
+    case regular
 }
